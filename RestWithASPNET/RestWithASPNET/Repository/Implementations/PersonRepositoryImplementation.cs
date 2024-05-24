@@ -1,14 +1,13 @@
 ﻿using RestWithASPNET.Model;
 using RestWithASPNET.Model.Context;
-using System;
 
-namespace RestWithASPNET.Services.Implementations
+namespace RestWithASPNET.Repository.Implementations
 {
-    public class PersonServiceImplementation : IPersonService
+    public class PersonRepositoryImplementation : IPersonRepository
     {
         private MySQLContext _context;
 
-        public PersonServiceImplementation(MySQLContext context)
+        public PersonRepositoryImplementation(MySQLContext context)
         {
             _context = context;
         }
@@ -18,6 +17,7 @@ namespace RestWithASPNET.Services.Implementations
 
             return _context.Persons.ToList();
         }
+
         public Person FindByID(long id)
         {
             return _context.Persons.SingleOrDefault(p => p.Id.Equals(id));
@@ -75,7 +75,7 @@ namespace RestWithASPNET.Services.Implementations
 
         }
 
-        private bool Exists(long id)
+        public bool Exists(long id)
         {
             return _context.Persons.Any(p => p.Id.Equals(id));
         }
