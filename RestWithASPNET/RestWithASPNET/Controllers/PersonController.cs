@@ -2,6 +2,7 @@ using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using RestWithASPNET.Business;
 using RestWithASPNET.Data.VO;
+using RestWithASPNET.Hypermedia.Filters;
 
 namespace RestWithASPNET.Controllers
 {
@@ -20,12 +21,14 @@ namespace RestWithASPNET.Controllers
         }
 
         [HttpGet]
+        [TypeFilter(typeof(HyperMediaFilter))]
         public IActionResult Get()
         {
             return Ok(_personBusiness.FindAll());
         }
 
         [HttpGet("{id:long}")]
+        [TypeFilter(typeof(HyperMediaFilter))]
         public IActionResult Get(long id)
         {
             var person = _personBusiness.FindByID(id);
@@ -34,6 +37,7 @@ namespace RestWithASPNET.Controllers
         }
 
         [HttpPost]
+        [TypeFilter(typeof(HyperMediaFilter))]
         public IActionResult Post([FromBody] PersonVO person)
         {
 
@@ -42,6 +46,7 @@ namespace RestWithASPNET.Controllers
         }
 
         [HttpPut]
+        [TypeFilter(typeof(HyperMediaFilter))]
         public IActionResult Put([FromBody] PersonVO person)
         {
 
