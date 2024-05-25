@@ -1,18 +1,17 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RestWithASPNET.Data.VO;
 using RestWithASPNET.Hypermedia.Constants;
-using System;
 using System.Text;
 
 namespace RestWithASPNET.Hypermedia.Enricher
 {
-    public class PersonEnricher : ContentResponseEnricher<PersonVO>
+    public class BookEnricher : ContentResponseEnricher<BookVO>
     {
-        protected override Task EnrichModel(PersonVO content, IUrlHelper urlHelper)
+        protected override Task EnrichModel(BookVO content, IUrlHelper urlHelper)
         {
             var path = "api";
-            string linkWithId = getLink(content.Id, urlHelper, path, "person");
-            string linkWithoutId = getLink(null, urlHelper, path, "person");
+            string linkWithId = getLink(content.Id, urlHelper, path, "book");
+            string linkWithoutId = getLink(null, urlHelper, path, "book");
 
             content.Links.Add(new HyperMediaLink()
             {
@@ -49,7 +48,7 @@ namespace RestWithASPNET.Hypermedia.Enricher
         {
             lock (this)
             {
-                var url = new {controller = path, type, id};
+                var url = new { controller = path, type, id };
                 return new StringBuilder(urlHelper.Link("DefaultApi", url)).Replace("%2F", "/").ToString();
             }
         }
