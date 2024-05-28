@@ -10,14 +10,35 @@ using RestWithASPNET.Repository.Generic;
 using Microsoft.Net.Http.Headers;
 using RestWithASPNET.Hypermedia.Filters;
 using RestWithASPNET.Hypermedia.Enricher;
+using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Rewrite;
 
 var builder = WebApplication.CreateBuilder(args);
+var appName = "RestWithASPNET";
+var appVersion = "v1";
+var appDescription = "API RESTful developed in ASP.NET Core 8";
 
-
+builder.Services.AddRouting(options => options.LowercaseUrls = true);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc(appVersion,
+        new OpenApiInfo
+        {
+            Title = appName,
+            Version = appVersion,
+            Description = appDescription,
+            Contact = new OpenApiContact
+            {
+                Name = "Pedro Zaccaria",
+                Url = new Uri("https://github.com/pZacca")
+            }
+        });
+});
 
 var connection = builder.Configuration["MySQLConnection:MySQLConnectionString"];
 builder.Services.AddDbContext<MySQLContext>(options => options.UseMySql(connection, new MySqlServerVersion(new Version(8, 0, 29))));
@@ -57,6 +78,19 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 
 app.UseHttpsRedirection();
+
+// Generates JSON Doc
+app.UseSwagger();
+
+// Generates HTML Page Doc
+app.UseSwaggerUI(c =>
+{
+	c.SwaggerEndpoint($"/swagger/{appVersion}/swagger.json", $"{appName} - {appVersion}");
+});
+
+var option = new RewriteOptions();
+option.AddRedirect("^$", "swagger");
+app.UseRewriter(option);
 
 app.UseAuthorization();
 
